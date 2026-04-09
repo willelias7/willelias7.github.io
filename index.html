@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>William Elias — Systems Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0e0e0d;
+      --surface: #161614;
+      --border: #2a2a26;
+      --accent: #c8f060;
+      --accent2: #f0c060;
+      --text: #e8e6df;
+      --muted: #7a7870;
+      --serif: 'DM Serif Display', serif;
+      --mono: 'DM Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.35;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(14,14,13,0.92);
+      border-color: var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 3rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(200,240,96,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 7vw, 6.5rem);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.35s forwards;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.65s forwards;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.8rem 1.8rem;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0e0e0d;
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: #d4f472; transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--muted); transform: translateY(-2px); }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+    }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      line-height: 1;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── SECTION SHARED ── */
+    section {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .section-title em { font-style: italic; color: var(--accent2); }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3rem;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+
+    .about-details { display: flex; flex-direction: column; gap: 1rem; }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .detail-key {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .detail-val {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .project-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(200,240,96,0.08);
+      border: 1px solid rgba(200,240,96,0.2);
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.93rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-highlights { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .project-highlights li {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .project-highlights li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-list { margin-top: 3rem; display: flex; flex-direction: column; gap: 0; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:first-child { border-top: 1px solid var(--border); }
+
+    .exp-meta { padding-top: 0.2rem; }
+    .exp-period {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+    .exp-org {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+    .exp-role {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .exp-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── SKILLS ── */
+    .skills-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .skills-section section { padding: 5rem 3rem; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .contact-link-label { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .contact-link-val { font-size: 0.9rem; }
+    .contact-link-arrow { color: var(--accent); font-size: 1.2rem; }
+
+    .contact-note {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      line-height: 1.3;
+      color: var(--muted);
+    }
+    .contact-note strong { color: var(--text); font-weight: 400; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; gap: 3rem; }
+      .hero-right { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .about-grid, .projects-grid, .contact-grid, .skills-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .project-card.featured { grid-column: auto; grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">WE_</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Systems Engineering @ UIUC</p>
+      <h1 class="hero-name">William<br/><em>Elias</em></h1>
+      <p class="hero-desc">Engineering student building systems that are precise, efficient, and built to last — from CAD models to code.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="mailto:willelias2025@gmail.com" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-card">
+        <div class="stat-number">40+</div>
+        <div class="stat-label">Page Technical Analysis Produced</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-number">35+</div>
+          <div class="stat-label">ASME-Standard Drawings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">20+</div>
+          <div class="stat-label">Components Stress Analyzed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1 of 33</div>
+        <div class="stat-label">Selected from 900+ AKPsi Candidates</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label reveal">01 — About</p>
+    <h2 class="section-title reveal">Engineer by training,<br/><em>builder</em> by nature</h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I'm a <strong>Systems Engineering student at the University of Illinois Urbana-Champaign</strong>, where I'm building a foundation at the intersection of design, analysis, and optimization. I'm drawn to problems that require both technical rigor and creative thinking.</p>
+        <p>My engineering work spans <strong>precision CAD modeling, stress analysis, and product design</strong> — I thrive in the details. Whether reverse-engineering a mechanical assembly or thinking through large-scale system tradeoffs, I bring the same structured, data-driven mindset.</p>
+        <p>Outside the classroom, I'm a competitive club volleyball player, an active member of <strong>Alpha Kappa Psi</strong>, and involved with the Institute of Industrial and Systems Engineers. I believe the best engineers are well-rounded — technically sharp and people-savvy.</p>
+      </div>
+      <div class="about-details reveal">
+        <div class="detail-item">
+          <span class="detail-key">University</span>
+          <span class="detail-val">UIUC</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-key">Degree</span>
+          <span class="detail-val">B.S. Systems Engineering</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-key">Expected Grad</span>
+          <span class="detail-val">May 2029</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-key">Location</span>
+          <span class="detail-val">Champaign, IL</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-key">Focus Areas</span>
+          <span class="detail-val">Product Design · Systems · PM</span>
+        </div>
+        <a href="mailto:willelias2025@gmail.com" class="btn btn-primary" style="margin-top:0.5rem; text-align:center;">Download Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label reveal">02 — Projects</p>
+    <h2 class="section-title reveal">Work that speaks<br/><em>for itself</em></h2>
+    <div class="projects-grid">
+
+      <div class="project-card featured reveal">
+        <div>
+          <span class="project-tag">Product Design · CAD · Stress Analysis</span>
+          <h3 class="project-title">Japanese Steel Pruning Shears — Reverse Engineering Study</h3>
+          <p class="project-desc">A comprehensive mechanical study of a complex pruning shear assembly, from precision measurement to full Fusion 360 model and 40-page technical report. Every component stress-analyzed to ASME standards.</p>
+          <a href="#contact" class="btn btn-ghost" style="font-size:0.78rem; padding:0.65rem 1.4rem;">Request Full Report →</a>
+        </div>
+        <div>
+          <ul class="project-highlights">
+            <li>Reverse engineered full assembly through precision measurement & parametric CAD</li>
+            <li>Built Fusion 360 model using freeform surfaces and bottom-up assembly methodology</li>
+            <li>Produced 40-page technical analysis with 35+ ASME-standard part drawings</li>
+            <li>Conducted stress analysis on 20+ critical components, identifying stress concentrations</li>
+            <li>Proposed geometry modifications to improve load distribution across the product</li>
+            <li>Developed 5 data-driven design improvement recommendations</li>
+            <li>3D printed a functional replica model to validate the CAD design</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <span class="project-tag">Systems Engineering · IISE</span>
+        <h3 class="project-title">Process Flow & Optimization Analysis</h3>
+        <p class="project-desc">Applying systems thinking and quantitative methods through IISE to analyze process flow, operational bottlenecks, and optimization tradeoffs in real-world industrial contexts.</p>
+        <ul class="project-highlights" style="margin-top:1rem;">
+          <li>Supply chain modeling & workflow optimization</li>
+          <li>Data-driven decision making frameworks</li>
+          <li>Cost constraint integration in engineering design</li>
+        </ul>
+      </div>
+
+      <div class="project-card reveal">
+        <span class="project-tag">Leadership · Business Development</span>
+        <h3 class="project-title">Alpha Kappa Psi — Professional Development</h3>
+        <p class="project-desc">Selected as 1 of 33 from a competitive pool of 900+ candidates, developing leadership and professional skills while building relationships with 15 corporate sponsors and industry professionals.</p>
+        <ul class="project-highlights" style="margin-top:1rem;">
+          <li>50+ professional & brotherhood events attended</li>
+          <li>Active networking with business professionals & recruiters</li>
+          <li>Philanthropy and community engagement initiatives</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="section-label reveal">03 — Experience</p>
+    <h2 class="section-title reveal">Where I've been,<br/><em>what I've built</em></h2>
+
+    <div class="exp-list">
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <p class="exp-period">Sep 2025 – Jan 2026</p>
+          <p class="exp-org">Personal Project</p>
+        </div>
+        <div>
+          <h3 class="exp-role">Product Design Engineer</h3>
+          <p class="exp-desc">Led a complete reverse engineering study of a Japanese steel pruning shear, producing ASME-standard technical drawings, stress analysis reports, and a 3D printed replica model. Delivered 5 data-driven design improvement recommendations.</p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <p class="exp-period">Jan 2026 – Present</p>
+          <p class="exp-org">Alpha Kappa Psi</p>
+        </div>
+        <div>
+          <h3 class="exp-role">New Member</h3>
+          <p class="exp-desc">Selected from 900+ applicants to join UIUC's premier professional business fraternity. Attending 50+ events focused on leadership, philanthropy, and professionalism while networking with 15 corporate sponsors.</p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <p class="exp-period">Sep 2025 – Present</p>
+          <p class="exp-org">IISE @ UIUC</p>
+        </div>
+        <div>
+          <h3 class="exp-role">Systems Engineering Member</h3>
+          <p class="exp-desc">Applying systems thinking and quantitative analysis to study real-world industrial engineering problems including workflow optimization, supply chain modeling, and data-driven decision making alongside industry professionals.</p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <p class="exp-period">Sep 2025 – Present</p>
+          <p class="exp-org">Joe's Champaign</p>
+        </div>
+        <div>
+          <h3 class="exp-role">Security Staff</h3>
+          <p class="exp-desc">Managing entry control for a high-volume venue serving 700+ patrons nightly. Enforcing compliance, de-escalating conflicts in real time, and coordinating with management to ensure smooth operations under pressure.</p>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <p class="exp-period">Sep 2025 – Present</p>
+          <p class="exp-org">UIUC Club Sports</p>
+        </div>
+        <div>
+          <h3 class="exp-role">Club Volleyball Athlete</h3>
+          <p class="exp-desc">Competing in 8–12 intercollegiate tournaments per season against NCAA Division III programs. Three structured practices per week (~6–9 hours) focused on serve-receive systems, rotational defense, and team communication.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <div class="skills-section">
+    <section>
+      <p class="section-label reveal">04 — Skills</p>
+      <h2 class="section-title reveal">Tools & <em>capabilities</em></h2>
+      <div class="skills-grid">
+        <div class="reveal">
+          <p class="skill-group-title">Engineering</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Fusion 360</span>
+            <span class="skill-tag">CAD Modeling</span>
+            <span class="skill-tag">Stress Analysis</span>
+            <span class="skill-tag">3D Printing</span>
+            <span class="skill-tag">ASME Standards</span>
+            <span class="skill-tag">Parametric Design</span>
+            <span class="skill-tag">Product Design</span>
+          </div>
+        </div>
+        <div class="reveal">
+          <p class="skill-group-title">Technical</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Systems Thinking</span>
+            <span class="skill-tag">Process Improvement</span>
+            <span class="skill-tag">Data Analysis</span>
+            <span class="skill-tag">Claude / AI Tools</span>
+          </div>
+        </div>
+        <div class="reveal">
+          <p class="skill-group-title">Professional</p>
+          <div class="skill-tags">
+            <span class="skill-tag">Leadership</span>
+            <span class="skill-tag">Communication</span>
+            <span class="skill-tag">Product Management</span>
+            <span class="skill-tag">Business Skills</span>
+            <span class="skill-tag">Time Management</span>
+            <span class="skill-tag">Structured Problem-Solving</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label reveal">05 — Contact</p>
+    <h2 class="section-title reveal">Let's <em>connect</em></h2>
+    <div class="contact-grid">
+      <div class="contact-note reveal">
+        <strong>Open to internship opportunities</strong> in product design, systems engineering, and product management for Summer 2026 and beyond.
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:willelias2025@gmail.com" class="contact-link">
+          <div>
+            <p class="contact-link-label">Email</p>
+            <p class="contact-link-val">willelias2025@gmail.com</p>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="https://linkedin.com/in/will-elias-4298a8382" target="_blank" class="contact-link">
+          <div>
+            <p class="contact-link-label">LinkedIn</p>
+            <p class="contact-link-val">will-elias-4298a8382</p>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="tel:+17737820744" class="contact-link">
+          <div>
+            <p class="contact-link-label">Phone</p>
+            <p class="contact-link-val">+1 (773) 782-0744</p>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 William Elias — Built with GitHub Pages</p>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
