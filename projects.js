@@ -16,6 +16,11 @@ const projects = [
     description:
       "Reverse engineered a complex pruning shear assembly through precision measurement, CAD modeling, and animation. Produced a 40-page technical analysis with 35+ ASME-standard part drawings and stress analysis on 20+ critical components.",
     tags: ["Fusion 360", "CAD", "3D Printing", "Stress Analysis", "Product Design"],
+    // TODO: Replace these filenames with your actual image files in assets/
+    images: [
+      "assets/shears-1.png",
+      "assets/shears-2.png",
+    ],
     github: "",
     demo: "",
     date: "Sep 2025 – Jan 2026",

@@ -30,13 +30,33 @@ function renderProjects() {
         .map(t => `<span class="project-tag">${escHtml(t)}</span>`)
         .join("");
 
+      // images: single path string or array of paths
+      const imageList = p.images
+        ? (Array.isArray(p.images) ? p.images : [p.images])
+        : [];
+
+      const imageHtml = imageList.length
+        ? `<div class="project-images">
+            ${imageList.map((src, idx) => `
+              <img
+                src="${escHtml(src)}"
+                alt="${escHtml(p.title)} — image ${idx + 1}"
+                class="project-img"
+                loading="lazy"
+              />`).join("")}
+           </div>`
+        : "";
+
       return `
         <div class="project-card fade-in" style="transition-delay:${i * 0.08}s">
-          ${p.date ? `<p class="project-date">${escHtml(p.date)}</p>` : ""}
-          <h3 class="project-title">${escHtml(p.title)}</h3>
-          <p class="project-desc">${escHtml(p.description)}</p>
-          <div class="project-tags">${tags}</div>
-          <div class="project-links">${githubBtn}${demoBtn}</div>
+          ${imageHtml}
+          <div class="project-card-body">
+            ${p.date ? `<p class="project-date">${escHtml(p.date)}</p>` : ""}
+            <h3 class="project-title">${escHtml(p.title)}</h3>
+            <p class="project-desc">${escHtml(p.description)}</p>
+            <div class="project-tags">${tags}</div>
+            <div class="project-links">${githubBtn}${demoBtn}</div>
+          </div>
         </div>
       `;
     })
