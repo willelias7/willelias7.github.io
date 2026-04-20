@@ -21,7 +21,17 @@ const projects = [
     date: "Sep 2025 – Jan 2026",
   },
 
-  // TODO: Add your second project here. Copy the object below and fill in your details.
+  {
+    title: "Poker Session Tracker",
+    description:
+      "Built a personal poker analytics web app to track session results, visualize earnings over time, and measure hourly rate trends. Features a calendar view for logging sessions, cumulative P&L charts, and a summer-specific analytics dashboard — all running in the browser with no backend.",
+    tags: ["JavaScript", "HTML/CSS", "Chart.js", "Data Visualization", "Product Design"],
+    github: "",
+    demo: "https://willelias7.github.io/poker-tracker/",
+    date: "2025",
+  },
+
+  // TODO: Add your next project here. Copy the object below and fill in your details.
   // {
   //   title: "Project Title",
   //   description: "Short description of what you built and why it matters.",
