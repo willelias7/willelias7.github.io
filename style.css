@@ -419,34 +419,6 @@ img { display: block; max-width: 100%; }
   flex: 1;
 }
 
-/* Image gallery at the top of the card */
-.project-images {
-  display: flex;
-  gap: 2px;
-  background: var(--cream-dark);
-  overflow: hidden;
-  max-height: 260px;
-}
-
-.project-images:has(.project-img:nth-child(2)) .project-img {
-  /* two or more images: side by side */
-  flex: 1;
-  min-width: 0;
-}
-
-.project-img {
-  width: 100%;
-  height: 260px;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  background: var(--cream-dark);
-  padding: 1rem;
-}
-
-.project-card:hover .project-img {
-  transform: scale(1.02);
-}
 
 .project-card:hover {
   transform: translateY(-4px);

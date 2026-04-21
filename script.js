@@ -22,8 +22,10 @@ function renderProjects() {
         ? `<a href="${escHtml(p.github)}" target="_blank" rel="noopener" class="btn btn-outlined btn-sm">GitHub</a>`
         : `<span class="btn btn-outlined btn-sm btn-disabled" title="No repository linked">GitHub</span>`;
 
+      const isImage = hasDemo && /\.(png|jpe?g|webp|gif|svg)$/i.test(p.demo);
+      const demoLabel = isImage ? "View Image" : "Live Demo";
       const demoBtn = hasDemo
-        ? `<a href="${escHtml(p.demo)}" target="_blank" rel="noopener" class="btn btn-filled btn-sm">Live Demo</a>`
+        ? `<a href="${escHtml(p.demo)}" target="_blank" rel="noopener" class="btn btn-filled btn-sm">${demoLabel}</a>`
         : `<span class="btn btn-filled btn-sm btn-disabled" title="Demo coming soon">Demo</span>`;
 
       const tags = (p.tags || [])
