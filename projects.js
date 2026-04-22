@@ -28,7 +28,7 @@ const projects = [
     tags: ["JavaScript", "HTML/CSS", "Chart.js", "Data Visualization", "Product Design"],
     github: "",
     demo: "https://willelias7.github.io/poker-tracker/",
-    date: "2025",
+    date: "2026",
   },
 
   // TODO: Add your next project here. Copy the object below and fill in your details.
